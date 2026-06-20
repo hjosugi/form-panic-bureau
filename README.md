@@ -74,6 +74,8 @@ code kernel-desk.code-workspace
 
 それでも残る場合は、VS Codeで`Elm: Restart Elm Language Server`または`Developer: Reload Window`を実行してください。
 
+リポジトリrootにもeditor向けの`elm.json`を置いています。これはrootを直接開いたVS Code/Elm Language Serverが`frontend/src`を解決するためのものです。実際のフロントエンドbuildは引き続き`frontend/elm.json`を使います。
+
 このアプリはHTTP APIを使うため、Elmの入口には`Browser.sandbox`や`Browser.document`ではなく`Browser.element`を使っています。`sandbox`は`Cmd`なしの小さな状態管理、`document`はページタイトルなどドキュメント全体も管理したい場合に向いています。
 
 ## すぐに試す
