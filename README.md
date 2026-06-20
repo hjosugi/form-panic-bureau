@@ -48,6 +48,14 @@ Elm compilerは`npm install`でプロジェクト内へ導入されます。Glea
 mise install
 ```
 
+Nixを利用する場合は、同梱の`flake.nix`からNode.js、npm、Gleam、Elmを含む開発シェルに入れます。
+
+```bash
+nix develop
+```
+
+Nix shell内ではElm compilerもPATHから使えるため、現在の構成では`npm install`なしでフロントエンドをbuildできます。npm経由でElmを入れたい場合やNixを使わない場合は、従来どおり`npm install`を実行してください。
+
 ## すぐに試す
 
 実際のLinuxリポジトリをまだ用意していない場合は、同梱の教育用ソースを使えます。
@@ -57,6 +65,15 @@ unzip kernel-desk.zip
 cd kernel-desk
 
 npm install
+npm run build
+npm run verify:local
+npm start
+```
+
+Nixを使う場合:
+
+```bash
+nix develop
 npm run build
 npm run verify:local
 npm start
@@ -140,6 +157,30 @@ npm run verify:local
 ```
 
 最初の`gleam build`で`backend/manifest.toml`が生成されます。依存バージョンを固定するため、そのファイルはGitへcommitしてください。
+
+## デプロイ
+
+### GitHub Pages
+
+このリポジトリにはGitHub Pages向けのworkflowを同梱しています。`main`へpushするか、Actionsタブから`Deploy static demo to GitHub Pages`を手動実行すると、`backend/priv/static`がPagesへ公開されます。
+
+GitHub Pagesは静的ホスティングのため、公開版は`sample/linux-mini`を使うdemo modeで動きます。ローカルGitリポジトリの読み取り、任意ファイルの読み取り、進捗JSONへの永続保存は、ローカルのGleam/Node.js serverで起動した場合だけ利用できます。
+
+初回だけGitHubのRepository SettingsでPagesのSourceを`GitHub Actions`にしてください。公開URLは通常、次の形式です。
+
+```text
+https://<user>.github.io/kernel-desk/
+```
+
+ローカルでもdemo modeを確認できます。
+
+```text
+http://127.0.0.1:4000/?demo=1
+```
+
+### 安い代替
+
+静的demoだけならCloudflare Pagesも相性がよいです。実際のローカルGit学習用途では、ユーザーの手元のファイルシステムと`git`コマンドへアクセスする必要があるため、クラウドへ置くよりローカル起動を推奨します。
 
 ## API
 
