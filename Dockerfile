@@ -2,7 +2,7 @@ FROM docker.io/nixos/nix:latest AS build
 
 WORKDIR /app
 
-COPY flake.nix ./
+COPY flake.nix flake.lock ./
 RUN nix --extra-experimental-features "nix-command flakes" develop --command true
 
 COPY . .
