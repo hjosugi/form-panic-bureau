@@ -76,6 +76,15 @@ code kernel-desk.code-workspace
 
 リポジトリrootにもeditor向けの`elm.json`を置いています。これはrootを直接開いたVS Code/Elm Language Serverが`frontend/src`を解決するためのものです。実際のフロントエンドbuildは引き続き`frontend/elm.json`を使います。
 
+syntax highlightがElmにならない場合は、推奨拡張を入れたあとで`Developer: Reload Window`を実行してください。同梱workspaceでは`*.elm`をElmとして関連付け、`elm`、`elm-format`、`elm-test`のPATHをElm LSへ明示しています。右下の言語モードが`Elm`以外なら、`Change Language Mode`から`Elm`を選んでください。
+
+VS Codeからよく使う操作は`Tasks: Run Task`で呼べます。
+
+- `elm: build debug`
+- `elm: build optimized`
+- `backend: check`
+- `app: dev server`
+
 このアプリはHTTP APIを使うため、Elmの入口には`Browser.sandbox`や`Browser.document`ではなく`Browser.element`を使っています。`sandbox`は`Cmd`なしの小さな状態管理、`document`はページタイトルなどドキュメント全体も管理したい場合に向いています。
 
 ## すぐに試す

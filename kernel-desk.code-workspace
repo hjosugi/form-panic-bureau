@@ -23,6 +23,16 @@
   ],
   "settings": {
     "editor.linkedEditing": true,
+    "files.associations": {
+      "*.elm": "elm",
+      "*.nix": "nix"
+    },
+    "elmLS.elmPath": "elm",
+    "elmLS.elmFormatPath": "elm-format",
+    "elmLS.elmTestPath": "elm-test",
+    "elmLS.trace.server": "off",
+    "elmLS.disableElmLSDiagnostics": false,
+    "elmLS.onlyUpdateDiagnosticsOnSave": false,
     "[elm]": {
       "editor.defaultFormatter": "Elmtooling.elm-ls-vscode",
       "editor.formatOnSave": true
