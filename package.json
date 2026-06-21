@@ -16,6 +16,7 @@
     "dev": "npm run build:frontend:debug && npm run start",
     "verify:local": "node scripts/verify.mjs",
     "linux:clone": "node scripts/linux-repo.mjs clone",
+    "linux:clone:shallow": "node scripts/linux-repo.mjs clone:shallow",
     "linux:start": "node scripts/linux-repo.mjs start",
     "linux:dev": "node scripts/linux-repo.mjs dev"
   },

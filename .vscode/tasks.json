@@ -37,6 +37,13 @@
       "problemMatcher": []
     },
     {
+      "label": "linux: clone torvalds/linux shallow",
+      "type": "shell",
+      "command": "npm run linux:clone:shallow",
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
       "label": "linux: start KernelDesk",
       "type": "shell",
       "command": "npm run linux:start",

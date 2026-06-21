@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: kernel-desk
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: KERNEL_REPO_PATH
+        value: /app/sample/linux-mini
+      - key: KERNEL_DESK_STATIC
+        value: /app/backend/priv/static
+      - key: KERNEL_DESK_DATA
+        value: /data/progress.json

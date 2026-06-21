@@ -136,7 +136,7 @@ export function saveProgress(dataFile, sourcePath, status, note) {
   }
 }
 
-export function startServer(port, staticRoot, handler) {
+export function startServer(host, port, staticRoot, handler) {
   const resolvedStaticRoot = path.resolve(staticRoot);
 
   const server = http.createServer((request, response) => {
@@ -207,8 +207,8 @@ export function startServer(port, staticRoot, handler) {
     });
   });
 
-  server.listen(port, "127.0.0.1", () => {
-    console.log(`KernelDesk is running at http://127.0.0.1:${port}`);
+  server.listen(port, host, () => {
+    console.log(`KernelDesk is running at http://${host}:${port}`);
   });
 
   return undefined;

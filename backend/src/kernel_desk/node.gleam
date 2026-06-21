@@ -26,6 +26,7 @@ pub fn save_progress(
 
 @external(javascript, "./node_ffi.mjs", "startServer")
 pub fn start_server(
+  host: String,
   port: Int,
   static_root: String,
   handler: fn(String, String, String, String) -> String,

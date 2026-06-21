@@ -21,7 +21,11 @@ const repositoryPath = path.resolve(
 
 switch (command) {
   case "clone":
-    cloneLinux();
+    cloneLinux({ shallow: false });
+    break;
+
+  case "clone:shallow":
+    cloneLinux({ shallow: true });
     break;
 
   case "start":
@@ -37,10 +41,10 @@ switch (command) {
     process.exit(command === "help" ? 0 : 1);
 }
 
-function cloneLinux() {
+function cloneLinux({ shallow }) {
   if (existsSync(path.join(repositoryPath, ".git"))) {
     console.log(`Linux repository already exists: ${repositoryPath}`);
-    console.log("Use `git -C <path> fetch --depth 1 origin` if you want to refresh it.");
+    console.log("Use `git -C <path> fetch origin` if you want to refresh it.");
     return;
   }
 
@@ -50,7 +54,12 @@ function cloneLinux() {
   }
 
   mkdirSync(path.dirname(repositoryPath), { recursive: true });
-  run("git", ["clone", "--depth", "1", repositoryUrl, repositoryPath]);
+  run(
+    "git",
+    shallow
+      ? ["clone", "--depth", "1", repositoryUrl, repositoryPath]
+      : ["clone", repositoryUrl, repositoryPath],
+  );
 }
 
 function startKernelDesk({ debugBuild }) {
@@ -129,6 +138,7 @@ function readEnvFile(filePath) {
 function printUsage() {
   console.log(`Usage:
   npm run linux:clone
+  npm run linux:clone:shallow
   npm run linux:start
   npm run linux:dev
 
