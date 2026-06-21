@@ -49,6 +49,10 @@ copyFileSync(
   join(frontendRoot, "public/styles.css"),
   join(outputDir, "styles.css"),
 );
+copyFileSync(
+  join(frontendRoot, "public/favicon.svg"),
+  join(outputDir, "favicon.svg"),
+);
 
 console.log(`Elm frontend built in ${optimize ? "optimized" : "debug"} mode.`);
 

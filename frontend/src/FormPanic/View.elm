@@ -166,9 +166,9 @@ viewForm model =
                     ]
                 ]
             , div [ class "checks" ]
-                [ checkRow "terms" "利用規約に同意します" model.terms ToggleTerms
-                , checkRow "mail" "お知らせメールを受け取ります" model.mail ToggleMail
-                , checkRow "survey" "アンケートに協力します" model.survey ToggleSurvey
+                [ checkRow "terms" (pick model.config.termsWanted "利用規約に同意します" "利用規約に同意しません") model.terms ToggleTerms
+                , checkRow "mail" (pick model.config.mailWanted "お知らせメールを受け取ります" "お知らせメールは受け取りません") model.mail ToggleMail
+                , checkRow "survey" (pick model.config.surveyWanted "アンケートに協力します" "アンケートには協力しません") model.survey ToggleSurvey
                 ]
             ]
         , viewActions model
@@ -222,6 +222,15 @@ viewActions model =
                 ]
             ]
         ]
+
+
+pick : Bool -> String -> String -> String
+pick cond yes no =
+    if cond then
+        yes
+
+    else
+        no
 
 
 field : String -> List (Html Msg) -> Html Msg

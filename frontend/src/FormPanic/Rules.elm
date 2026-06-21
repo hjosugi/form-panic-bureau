@@ -64,15 +64,15 @@ rules model =
       }
     , { title = "利用規約"
       , hint = choose cfg.termsWanted "同意する" "同意しない"
-      , passed = model.terms == cfg.termsWanted
+      , passed = model.terms
       }
     , { title = "お知らせメール"
       , hint = choose cfg.mailWanted "受け取る" "受け取らない"
-      , passed = model.mail == cfg.mailWanted
+      , passed = model.mail
       }
     , { title = "アンケート"
       , hint = choose cfg.surveyWanted "協力する" "協力しない"
-      , passed = model.survey == cfg.surveyWanted
+      , passed = model.survey
       }
     ]
 
