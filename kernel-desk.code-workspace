@@ -33,9 +33,68 @@
     "elmLS.trace.server": "off",
     "elmLS.disableElmLSDiagnostics": false,
     "elmLS.onlyUpdateDiagnosticsOnSave": false,
+    "nix.enableLanguageServer": true,
+    "nix.serverPath": "nil",
     "[elm]": {
       "editor.defaultFormatter": "Elmtooling.elm-ls-vscode",
       "editor.formatOnSave": true
     }
+  },
+  "tasks": {
+    "version": "2.0.0",
+    "options": {
+      "cwd": "${workspaceFolder:frontend}/.."
+    },
+    "tasks": [
+      {
+        "label": "elm: build debug",
+        "type": "shell",
+        "command": "nix develop --command npm run build:frontend:debug",
+        "group": "build",
+        "problemMatcher": []
+      },
+      {
+        "label": "elm: build optimized",
+        "type": "shell",
+        "command": "nix develop --command npm run build:frontend",
+        "group": "build",
+        "problemMatcher": []
+      },
+      {
+        "label": "backend: check",
+        "type": "shell",
+        "command": "nix develop --command npm run check:backend",
+        "group": "test",
+        "problemMatcher": []
+      },
+      {
+        "label": "app: dev server",
+        "type": "shell",
+        "command": "nix develop --command npm run dev",
+        "isBackground": true,
+        "problemMatcher": []
+      },
+      {
+        "label": "linux: clone torvalds/linux",
+        "type": "shell",
+        "command": "nix develop --command npm run linux:clone",
+        "group": "build",
+        "problemMatcher": []
+      },
+      {
+        "label": "linux: clone torvalds/linux shallow",
+        "type": "shell",
+        "command": "nix develop --command npm run linux:clone:shallow",
+        "group": "build",
+        "problemMatcher": []
+      },
+      {
+        "label": "linux: start KernelDesk",
+        "type": "shell",
+        "command": "nix develop --command npm run linux:start",
+        "isBackground": true,
+        "problemMatcher": []
+      }
+    ]
   }
 }

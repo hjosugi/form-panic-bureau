@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, mkdirSync } from "node:fs";
+import { copyFileSync, mkdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
@@ -29,7 +29,7 @@ const result = spawnSync(elm, args, {
 if (result.error) {
   if (result.error.code === "ENOENT") {
     console.error(
-      "Elm compiler was not found. Run `npm install`, `mise install`, or enter `nix develop`.",
+      "Elm compiler was not found. Enter the Nix dev shell with `nix develop` before building.",
     );
     process.exit(1);
   }
@@ -53,11 +53,5 @@ copyFileSync(
 console.log(`Elm frontend built in ${optimize ? "optimized" : "debug"} mode.`);
 
 function findElm() {
-  const executable = process.platform === "win32" ? "elm.cmd" : "elm";
-  const candidates = [
-    join(frontendRoot, "node_modules", ".bin", executable),
-    join(frontendRoot, "..", "node_modules", ".bin", executable),
-  ];
-
-  return candidates.find((candidate) => existsSync(candidate)) ?? executable;
+  return process.platform === "win32" ? "elm.cmd" : "elm";
 }

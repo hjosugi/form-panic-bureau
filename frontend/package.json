@@ -5,8 +5,5 @@
   "scripts": {
     "build": "node scripts/build.mjs --optimize",
     "build:debug": "node scripts/build.mjs"
-  },
-  "devDependencies": {
-    "elm": "0.19.1-6"
   }
 }

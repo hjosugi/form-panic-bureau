@@ -44,7 +44,7 @@ switch (command) {
 function cloneLinux({ shallow }) {
   if (existsSync(path.join(repositoryPath, ".git"))) {
     console.log(`Linux repository already exists: ${repositoryPath}`);
-    console.log("Use `git -C <path> fetch origin` if you want to refresh it.");
+    console.log("Inside `nix develop`, use `git -C <path> fetch origin` if you want to refresh it.");
     return;
   }
 
@@ -65,7 +65,9 @@ function cloneLinux({ shallow }) {
 function startKernelDesk({ debugBuild }) {
   if (!existsSync(path.join(repositoryPath, ".git"))) {
     console.error(`Linux repository is not cloned yet: ${repositoryPath}`);
-    console.error("Run `npm run linux:clone` first, or set LINUX_REPO_PATH/KERNEL_REPO_PATH.");
+    console.error(
+      "Run `nix develop --command npm run linux:clone` first, or set LINUX_REPO_PATH/KERNEL_REPO_PATH.",
+    );
     process.exit(1);
   }
 
@@ -137,10 +139,16 @@ function readEnvFile(filePath) {
 
 function printUsage() {
   console.log(`Usage:
-  npm run linux:clone
-  npm run linux:clone:shallow
-  npm run linux:start
-  npm run linux:dev
+  nix develop --command npm run linux:clone
+  nix develop --command npm run linux:clone:shallow
+  nix develop --command npm run linux:start
+  nix develop --command npm run linux:dev
+
+Nix apps:
+  nix run .#linux-clone
+  nix run .#linux-clone-shallow
+  nix run .#linux-start
+  nix run .#linux-dev
 
 Environment:
   LINUX_REPO_PATH=/path/to/linux

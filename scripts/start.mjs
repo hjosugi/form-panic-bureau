@@ -22,7 +22,7 @@ const child = spawn(command, ["run"], {
 
 child.on("error", (error) => {
   console.error(`Failed to start Gleam: ${error.message}`);
-  console.error("Install Gleam 1.17 or use mise before running npm start.");
+  console.error("Enter the Nix dev shell with `nix develop` before starting KernelDesk.");
   process.exitCode = 1;
 });
 

@@ -23,16 +23,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
         with:
-          node-version: 22
-
-      - name: Install dependencies
-        run: npm install
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build static Elm demo
-        run: npm run build:frontend
+        run: nix develop --command npm run build:frontend
 
       - name: Disable Jekyll
         run: touch backend/priv/static/.nojekyll

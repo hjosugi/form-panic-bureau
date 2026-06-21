@@ -1,24 +1,12 @@
-FROM node:22-bookworm-slim AS build
-
-ARG GLEAM_VERSION=1.17.0
-
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends ca-certificates curl git \
-  && rm -rf /var/lib/apt/lists/*
-
-RUN curl --fail --location --silent --show-error \
-  "https://github.com/gleam-lang/gleam/releases/download/v${GLEAM_VERSION}/gleam-v${GLEAM_VERSION}-x86_64-unknown-linux-musl.tar.gz" \
-  | tar -xz -C /usr/local/bin gleam
+FROM nixos/nix:latest AS build
 
 WORKDIR /app
 
-COPY package.json ./
-COPY frontend/package.json ./frontend/package.json
-COPY frontend/elm.json ./frontend/elm.json
-RUN npm install
+COPY flake.nix ./
+RUN nix --extra-experimental-features "nix-command flakes" develop --command true
 
 COPY . .
-RUN npm run build
+RUN nix --extra-experimental-features "nix-command flakes" develop --command npm run build
 
 FROM node:22-bookworm-slim AS runtime
 
@@ -39,4 +27,4 @@ ENV KERNEL_DESK_DATA=/data/progress.json
 
 EXPOSE 4000
 
-CMD ["node", "/app/backend/build/dev/javascript/kernel_desk/gleam@@private_main_v1.17.0.mjs"]
+CMD ["node", "--input-type=module", "--eval", "import('/app/backend/build/dev/javascript/kernel_desk/kernel_desk.mjs').then(({ main }) => main())"]
