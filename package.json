@@ -1,21 +1,14 @@
 {
-  "name": "kernel-desk",
+  "name": "form-panic-bureau",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "build:frontend": "node frontend/scripts/build.mjs --optimize",
     "build:frontend:debug": "node frontend/scripts/build.mjs",
-    "build:backend": "cd backend && gleam build",
-    "check:backend": "cd backend && gleam check",
-    "format:backend": "cd backend && gleam format src",
-    "build": "npm run build:frontend && npm run build:backend",
-    "start": "node scripts/start.mjs",
-    "dev": "npm run build:frontend:debug && npm run start",
-    "verify:local": "node scripts/verify.mjs",
-    "linux:clone": "node scripts/linux-repo.mjs clone",
-    "linux:clone:shallow": "node scripts/linux-repo.mjs clone:shallow",
-    "linux:start": "node scripts/linux-repo.mjs start",
-    "linux:dev": "node scripts/linux-repo.mjs dev"
+    "build": "npm run build:frontend",
+    "check": "npm run build:frontend:debug",
+    "start": "node scripts/serve-static.mjs",
+    "dev": "npm run build:frontend:debug && npm run start"
   },
   "engines": {
     "node": ">=20"

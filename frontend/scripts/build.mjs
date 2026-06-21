@@ -5,7 +5,7 @@ import { spawnSync } from "node:child_process";
 
 const scriptDir = dirname(fileURLToPath(import.meta.url));
 const frontendRoot = resolve(scriptDir, "..");
-const outputDir = resolve(frontendRoot, "../backend/priv/static");
+const outputDir = resolve(frontendRoot, "../dist");
 const optimize = process.argv.includes("--optimize");
 const elm = findElm();
 

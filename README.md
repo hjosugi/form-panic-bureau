@@ -1,333 +1,57 @@
-# KernelDesk
+# Form Panic Bureau
 
-Elm + Gleamで作る、ローカルGitリポジトリとLinuxカーネルコードの学習ダッシュボードです。
+Elmだけで作る、理不尽フォーム突破ブラウザゲームです。
 
-## MVPでできること
+60秒以内にフォームの不備を全部つぶして、逃げる`Accept`ボタンを押せたら勝ちです。昔からある「わざと使いづらいフォーム」系のパロディを、軽く遊べる1画面ゲームにしています。
 
-- 指定したローカルGitリポジトリのbranch、remote、最新commit、変更ファイルを確認
-- Linuxカーネルの学習ルートから主要ファイルを開く
-- 任意のリポジトリ相対パスを指定してソースを読む
-- ファイルごとに`Not started / Reading / Understood`を保存
-- ファイルごとに学習メモを保存
-- 進捗をローカルJSONファイルへ永続化
-- GitHub tokenや外部データベースなしで利用
+## 使い方
 
-## 構成
-
-```text
-Browser
-  |
-  | JSON API
-  v
-Elm frontend
-  |
-  v
-Gleam router (JavaScript target)
-  |
-  v
-Small Node.js FFI layer
-  |- local git commands
-  |- source file access
-  `- progress.json
-```
-
-Gleamはルーティング、入力検証、学習ルート、JSONレスポンス生成を担当します。Node.js FFIは、ローカルファイル、HTTP server、`git`コマンドとの境界に限定しています。
-
-## 必要なもの
-
-このリポジトリの開発ツールはNixに統一しています。Node.js/npm、Gleam、Elm compiler、`elm-format`、`elm-test`、Elm Language Server、Git、Nix language serverは`flake.nix`から入ります。
-
-- Nix with flakes
-- direnv。VS Codeで開く場合は推奨
-- Docker。Renderなどへcontainer deployする場合だけ必要
-
-GleamはJavaScript targetとNode.js runtimeを使うため、Erlangは不要です。npmはpackage installではなく、repo内のtask runnerとして使います。
-
-### CachyOS / Arch LinuxでNixを入れる
-
-CachyOSやArch系では、Nix daemonとflakesを有効にしてからrepoへ入ります。
-
-```bash
-sudo pacman -S nix direnv
-sudo systemctl enable --now nix-daemon.service
-echo "experimental-features = nix-command flakes" | sudo tee -a /etc/nix/nix.conf
-sudo systemctl restart nix-daemon.service
-```
-
-shellを開き直したあと、repo直下で開発シェルに入ります。
+このrepoのtoolchainはNixに統一しています。
 
 ```bash
 nix develop
-```
-
-shellに入らず一回だけ実行する場合は、`nix develop --command ...`または`nix run .#...`を使います。
-
-```bash
-nix develop --command npm run build
-nix run .#check
-```
-
-direnvを使う場合は一度だけ許可します。
-
-```bash
-direnv allow
-```
-
-### VS Code + Elm
-
-VS Codeで開発する場合は、推奨拡張としてElm language server、Nix IDE、direnvを提示しています。リポジトリ直下で一度だけdirenvを許可すると、VS Codeが`flake.nix`のElm toolingを拾いやすくなります。
-
-```bash
-direnv allow
-code kernel-desk.code-workspace
-```
-
-`flake.nix`にはElm compilerに加えて、`elm-format`、`elm-test`、`elm-language-server`を入れています。これにより、VS Code上の診断、補完、formatをnpm global installなしで揃えられます。
-
-Elm Language Serverが`KernelDesk.*`モジュールを解決できず赤線を出す場合は、VS Codeでリポジトリrootをそのまま開く代わりに、同梱のworkspaceを開いてください。`frontend`が独立したworkspace folderになり、`frontend/elm.json`をrootとして認識しやすくなります。
-
-```bash
-code kernel-desk.code-workspace
-```
-
-それでも残る場合は、VS Codeで`Elm: Restart Elm Language Server`または`Developer: Reload Window`を実行してください。
-
-リポジトリrootにもeditor向けの`elm.json`を置いています。これはrootを直接開いたVS Code/Elm Language Serverが`frontend/src`を解決するためのものです。実際のフロントエンドbuildは引き続き`frontend/elm.json`を使います。
-
-syntax highlightがElmにならない場合は、推奨拡張を入れたあとで`Developer: Reload Window`を実行してください。同梱workspaceでは`*.elm`をElmとして関連付け、`elm`、`elm-format`、`elm-test`のPATHをElm LSへ明示しています。右下の言語モードが`Elm`以外なら、`Change Language Mode`から`Elm`を選んでください。
-
-VS Codeからよく使う操作は`Tasks: Run Task`で呼べます。タスクは`nix develop --command ...`で実行するため、VS Code上でも同じtoolingを使います。
-
-- `elm: build debug`
-- `elm: build optimized`
-- `backend: check`
-- `app: dev server`
-- `linux: clone torvalds/linux`
-- `linux: clone torvalds/linux shallow`
-- `linux: start KernelDesk`
-
-通常の操作は次の流れです。
-
-1. `elm: build debug`でElmの型とbuildを確認
-2. `backend: check`でGleam backendを確認
-3. `app: dev server`で`http://127.0.0.1:4000`を起動
-4. GitHub Pages向けの静的demoは`main`へpushするとActionsで自動deploy
-
-このアプリはHTTP APIを使うため、Elmの入口には`Browser.sandbox`や`Browser.document`ではなく`Browser.element`を使っています。`sandbox`は`Cmd`なしの小さな状態管理、`document`はページタイトルなどドキュメント全体も管理したい場合に向いています。
-
-## すぐに試す
-
-実際のLinuxリポジトリをまだ用意していない場合は、同梱の教育用ソースを使えます。
-
-```bash
-cd kernel-desk
-nix develop --command npm run build
-nix develop --command npm run verify:local
-nix develop --command npm start
-```
-
-direnvを許可済みなら、次回からは`nix develop`なしでそのまま実行できます。
-
-```bash
-direnv allow
 npm run build
-npm run verify:local
 npm start
 ```
 
-ブラウザで次を開きます。
+ブラウザで開きます。
 
 ```text
 http://127.0.0.1:4000
 ```
 
-`sample/linux-mini`はUI確認用のsynthetic sampleです。実際のLinuxカーネルコードではありません。
+ビルド結果は`dist/`に出ます。`dist/index.html`を直接開いても遊べます。
 
-## 実際のLinuxソースを読む
-
-[`torvalds/linux`](https://github.com/torvalds/linux)を読む場合は、Nix shell内でまずcloneします。既定では履歴込みで`$HOME/src/linux`へfull cloneします。手元のcloneは約8GBなので、20GBほど空きがあれば十分な目安です。
+## コマンド
 
 ```bash
-nix run .#linux-clone
-```
-
-浅いcloneで軽く始めたい場合:
-
-```bash
-nix run .#linux-clone-shallow
-```
-
-別の場所へcloneしたい場合:
-
-```bash
-LINUX_REPO_PATH="$HOME/src/linux-mainline" nix run .#linux-clone
-```
-
-そのrepoをKernelDeskで開きます。
-
-```bash
-nix run .#linux-start
-```
-
-debug buildも一緒に行う開発用起動:
-
-```bash
-nix run .#linux-dev
-```
-
-手動で指定する場合は、別の場所へLinuxリポジトリをcloneします。
-
-```bash
-nix develop --command git clone --depth 1 https://github.com/torvalds/linux.git "$HOME/src/linux"
-```
-
-起動時に絶対パスを渡します。
-
-```bash
-KERNEL_REPO_PATH="$HOME/src/linux" nix run .#linux-start
-```
-
-毎回指定したくない場合は`.env`を作成します。
-
-```bash
-cp .env.example .env
-```
-
-`.env`:
-
-```dotenv
-KERNEL_REPO_PATH=/home/you/src/linux
-PORT=4000
-KERNEL_DESK_DATA=./data/progress.json
-KERNEL_DESK_STATIC=./priv/static
-```
-
-環境変数は`.env`より優先されます。相対パスの設定値は`backend/`を基準に解決されます。
-
-## 開発コマンド
-
-まずNix appとしてよく使う入口を用意しています。
-
-```bash
-nix run .#check
-nix run .#build
-nix run .#dev
-nix run .#linux-start
-```
-
-細かく実行したい場合は、すべて`nix develop`内、または`direnv allow`済みのshellで実行します。
-
-Elmをdebug build:
-
-```bash
-npm run build:frontend:debug
-```
-
-Elmをoptimized build:
-
-```bash
-npm run build:frontend
-```
-
-Gleamをtype check:
-
-```bash
-npm run check:backend
-```
-
-Gleamをformat:
-
-```bash
-npm run format:backend
-```
-
-フロントエンドをdebug buildして起動:
-
-```bash
+npm run build
+npm run check
 npm run dev
+npm start
 ```
 
-Node.js FFIのローカル動作を検証:
+Nix appとしても呼べます。
 
 ```bash
-npm run verify:local
+nix run .#build
+nix run .#check
+nix run .#dev
 ```
 
-最初の`gleam build`で`backend/manifest.toml`が生成されます。依存バージョンを固定するため、そのファイルはGitへcommitしてください。
+## VS Code
+
+```bash
+direnv allow
+code kernel-desk.code-workspace
+```
+
+推奨拡張はElm Language Server、Nix IDE、direnvです。workspace内のtaskは`nix develop --command ...`経由で動きます。
 
 ## デプロイ
 
-### GitHub Pages
-
-このリポジトリにはGitHub Pages向けのworkflowを同梱しています。`main`へpushするか、Actionsタブから`Deploy static demo to GitHub Pages`を手動実行すると、`backend/priv/static`がPagesへ公開されます。workflowもNixをinstallし、`nix develop --command npm run build:frontend`でbuildします。
-
-GitHub Pagesは静的ホスティングのため、公開版は`sample/linux-mini`を使うdemo modeで動きます。ローカルGitリポジトリの読み取り、任意ファイルの読み取り、進捗JSONへの永続保存は、ローカルのGleam/Node.js serverで起動した場合だけ利用できます。
-
-初回だけGitHubのRepository SettingsでPagesのSourceを`GitHub Actions`にしてください。公開URLは通常、次の形式です。
+`main`へpushするとGitHub Pages workflowが`dist/`を公開します。
 
 ```text
-https://<user>.github.io/kernel-desk/
+https://hjosugi.github.io/kernel-desk/
 ```
-
-ローカルでもdemo modeを確認できます。
-
-```text
-http://127.0.0.1:4000/?demo=1
-```
-
-### 安い代替
-
-静的demoだけならCloudflare Pagesも相性がよいです。実際のローカルGit学習用途では、ユーザーの手元のファイルシステムと`git`コマンドへアクセスする必要があるため、クラウドへ置くよりローカル起動を推奨します。
-
-## API
-
-```text
-GET  /api/health
-GET  /api/repo
-GET  /api/learning-path
-GET  /api/file?path=init/main.c
-GET  /api/progress
-POST /api/progress
-```
-
-`POST /api/progress`:
-
-```json
-{
-  "path": "init/main.c",
-  "status": "reading",
-  "note": "Trace start_kernel() and list the initialization order."
-}
-```
-
-## 学習の進め方
-
-1. `init/main.c`でboot sequenceの入口を確認する
-2. 関数名を検索し、呼び出し先をメモする
-3. 1ファイルを理解し切ろうとせず、subsystemの責務を一文で書く
-4. `Reading`から`Understood`へ変更する条件を自分で決める
-5. scheduler、memory、VFS、networkの順で読む
-
-## ディレクトリ
-
-```text
-kernel-desk/
-├── backend/                 Gleam API + Node.js FFI
-├── frontend/                Elm application
-├── sample/linux-mini/       教育用synthetic source
-├── scripts/                 起動・検証用Node.js scripts
-├── docs/ROADMAP.md          次に実装する機能
-├── .env.example
-├── .envrc                   direnv entrypoint
-├── flake.nix                開発toolchain
-├── kernel-desk.code-workspace
-└── package.json
-```
-
-## セキュリティ上の前提
-
-サーバーは初期状態で`127.0.0.1`だけにbindします。指定リポジトリ外へのpath traversalを拒否し、ソース表示量とrequest bodyに上限を設けています。インターネットへ公開する前に、認証、repository allowlist、CSRF対策、CORS制限、rate limitを追加してください。
-
-## 次の実装候補
-
-`docs/ROADMAP.md`に整理しています。最初はdirectory tree、`git grep`によるsymbol検索、file history、`git blame`の順がおすすめです。

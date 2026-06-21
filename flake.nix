@@ -1,5 +1,5 @@
 {
-  description = "KernelDesk development environment";
+  description = "Form Panic Bureau Elm browser game environment";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -17,31 +17,29 @@
 
       forAllSystems = nixpkgs.lib.genAttrs systems;
 
-      kernelDeskPackages = pkgs: [
+      formPanicPackages = pkgs: [
         pkgs.elmPackages.elm
         pkgs.elmPackages.elm-format
         pkgs.elmPackages.elm-language-server
         pkgs.elmPackages.elm-test
-        pkgs.git
-        pkgs.gleam
         pkgs.nil
         pkgs.nixfmt
         pkgs.nodejs_22
       ];
 
-      kernelDeskApp =
+      formPanicApp =
         pkgs: name: command:
         let
           script = pkgs.writeShellApplication {
-            name = "kernel-desk-${name}";
-            runtimeInputs = kernelDeskPackages pkgs;
+            name = "form-panic-${name}";
+            runtimeInputs = formPanicPackages pkgs;
             text = command;
           };
         in
         {
           type = "app";
-          program = "${script}/bin/kernel-desk-${name}";
-          meta.description = "KernelDesk ${name} command";
+          program = "${script}/bin/form-panic-${name}";
+          meta.description = "Form Panic Bureau ${name} command";
         };
     in
     {
@@ -49,21 +47,14 @@
         system:
         let
           pkgs = import nixpkgs { inherit system; };
-          app = kernelDeskApp pkgs;
+          app = formPanicApp pkgs;
         in
         {
           default = app "dev" "npm run dev";
           build = app "build" "npm run build";
-          check = app "check" ''
-            npm run build:frontend:debug
-            npm run check:backend
-            npm run verify:local
-          '';
+          check = app "check" "npm run check";
           dev = app "dev" "npm run dev";
-          linux-clone = app "linux-clone" "npm run linux:clone";
-          linux-clone-shallow = app "linux-clone-shallow" "npm run linux:clone:shallow";
-          linux-start = app "linux-start" "npm run linux:start";
-          linux-dev = app "linux-dev" "npm run linux:dev";
+          start = app "start" "npm start";
         }
       );
 
@@ -74,13 +65,12 @@
         in
         {
           default = pkgs.mkShell {
-            packages = kernelDeskPackages pkgs;
+            packages = formPanicPackages pkgs;
 
             shellHook = ''
-              echo "KernelDesk dev shell"
+              echo "Form Panic Bureau dev shell"
               echo "  node  $(node --version)"
               echo "  npm   $(npm --version)"
-              echo "  gleam $(gleam --version)"
               echo "  elm   $(elm --version)"
               echo "  elm-format        $(command -v elm-format)"
               echo "  elm-test          $(command -v elm-test)"
@@ -97,7 +87,7 @@
           pkgs = import nixpkgs { inherit system; };
         in
         pkgs.writeShellApplication {
-          name = "kernel-desk-fmt";
+          name = "form-panic-fmt";
           runtimeInputs = [ pkgs.nixfmt ];
           text = "nixfmt flake.nix";
         }

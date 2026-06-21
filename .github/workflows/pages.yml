@@ -1,4 +1,4 @@
-name: Deploy static demo to GitHub Pages
+name: Deploy Form Panic Bureau to GitHub Pages
 
 on:
   push:
@@ -28,16 +28,16 @@ jobs:
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build static Elm demo
+      - name: Build static Elm game
         run: nix develop --command npm run build:frontend
 
       - name: Disable Jekyll
-        run: touch backend/priv/static/.nojekyll
+        run: touch dist/.nojekyll
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: backend/priv/static
+          path: dist
 
   deploy:
     needs: build
