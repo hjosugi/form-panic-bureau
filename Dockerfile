@@ -1,4 +1,4 @@
-FROM nixos/nix:latest AS build
+FROM docker.io/nixos/nix:latest AS build
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ RUN nix --extra-experimental-features "nix-command flakes" develop --command tru
 COPY . .
 RUN nix --extra-experimental-features "nix-command flakes" develop --command npm run build
 
-FROM node:22-bookworm-slim AS runtime
+FROM docker.io/library/node:22-bookworm-slim AS runtime
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends ca-certificates git \

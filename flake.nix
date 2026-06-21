@@ -41,6 +41,7 @@
         {
           type = "app";
           program = "${script}/bin/kernel-desk-${name}";
+          meta.description = "KernelDesk ${name} command";
         };
     in
     {
