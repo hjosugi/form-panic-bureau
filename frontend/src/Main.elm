@@ -69,14 +69,14 @@ update msg model =
         ToggleTerms checked ->
             ( { model | terms = checked }, Cmd.none )
 
-        ToggleRobot checked ->
-            ( { model | notRobot = checked }, Cmd.none )
+        ToggleMail checked ->
+            ( { model | mail = checked }, Cmd.none )
 
-        ToggleDecoy checked ->
-            ( { model | decoy = checked }, Cmd.none )
+        ToggleSurvey checked ->
+            ( { model | survey = checked }, Cmd.none )
 
-        SliderChanged value ->
-            ( { model | slider = value }, Cmd.none )
+        AdjustCopies delta ->
+            ( { model | copies = clamp 0 9 (model.copies + delta) }, Cmd.none )
 
         ButtonDodged ->
             dodgeButton model

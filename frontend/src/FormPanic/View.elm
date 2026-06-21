@@ -18,7 +18,7 @@ view model =
             [ div [ class "brand" ]
                 [ viewSeal
                 , div []
-                    [ h1 [] [ text "Form Panic Bureau" ]
+                    [ h1 [] [ text "Form Panic" ]
                     , p [] [ text "60秒で理不尽フォームを受理させるブラウザゲーム" ]
                     ]
                 ]
@@ -157,12 +157,18 @@ viewForm model =
                     , option [ value "window-4", selected (model.window == "window-4") ] [ text "4番: 偉そう" ]
                     ]
                 ]
-            , field ("番号つまみ: " ++ model.slider)
-                [ input [ type_ "range", Html.Attributes.min "0", Html.Attributes.max "100", value model.slider, onInput SliderChanged ] [] ]
+            , field "申請部数"
+                [ div [ class "stepper" ]
+                    -- The +/- buttons are deliberately swapped.
+                    [ button [ type_ "button", class "stepper-btn", onClick (AdjustCopies -1) ] [ text "＋" ]
+                    , span [ class "stepper-count" ] [ text (String.fromInt model.copies ++ " 部") ]
+                    , button [ type_ "button", class "stepper-btn", onClick (AdjustCopies 1) ] [ text "－" ]
+                    ]
+                ]
             , div [ class "checks" ]
                 [ checkRow "terms" "利用規約に同意します" model.terms ToggleTerms
-                , checkRow "robot" "私はロボットではない可能性があります" model.notRobot ToggleRobot
-                , checkRow "decoy" "同意を取り消します" model.decoy ToggleDecoy
+                , checkRow "mail" "お知らせメールを受け取ります" model.mail ToggleMail
+                , checkRow "survey" "アンケートに協力します" model.survey ToggleSurvey
                 ]
             ]
         , viewActions model

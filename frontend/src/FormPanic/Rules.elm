@@ -21,7 +21,7 @@ configGenerator =
         |> andMap (Random.int 3 8)
         |> andMap (Random.uniform ".dev" [ ".io", ".jp", ".com", ".net", ".xyz" ])
         |> andMap (Random.int 1 4)
-        |> andMap (Random.int 5 95)
+        |> andMap (Random.int 2 6)
         |> andMap bool
         |> andMap bool
         |> andMap bool
@@ -39,12 +39,12 @@ rules model =
         email =
             String.trim (String.toLower model.email)
 
-        wantText want =
+        choose want yes no =
             if want then
-                "チェックを入れる"
+                yes
 
             else
-                "チェックは外したままにする"
+                no
     in
     [ { title = "氏名"
       , hint = String.fromInt cfg.nameMin ++ "文字以上"
@@ -58,21 +58,21 @@ rules model =
       , hint = String.fromInt cfg.windowOpen ++ "番窓口だけが開いています"
       , passed = model.window == ("window-" ++ String.fromInt cfg.windowOpen)
       }
-    , { title = "番号つまみ"
-      , hint = String.fromInt cfg.sliderTarget ++ " ちょうどに合わせる"
-      , passed = model.slider == String.fromInt cfg.sliderTarget
+    , { title = "申請部数"
+      , hint = String.fromInt cfg.copiesTarget ++ " 部ちょうどにする"
+      , passed = model.copies == cfg.copiesTarget
       }
     , { title = "利用規約"
-      , hint = wantText cfg.termsWanted
+      , hint = choose cfg.termsWanted "同意する" "同意しない"
       , passed = model.terms == cfg.termsWanted
       }
-    , { title = "ロボット確認"
-      , hint = wantText cfg.robotWanted
-      , passed = model.notRobot == cfg.robotWanted
+    , { title = "お知らせメール"
+      , hint = choose cfg.mailWanted "受け取る" "受け取らない"
+      , passed = model.mail == cfg.mailWanted
       }
-    , { title = "罠チェック"
-      , hint = wantText cfg.decoyWanted
-      , passed = model.decoy == cfg.decoyWanted
+    , { title = "アンケート"
+      , hint = choose cfg.surveyWanted "協力する" "協力しない"
+      , passed = model.survey == cfg.surveyWanted
       }
     ]
 

@@ -37,5 +37,5 @@ createServer((request, response) => {
   });
   createReadStream(filePath).pipe(response);
 }).listen(port, "127.0.0.1", () => {
-  console.log(`Form Panic Bureau is running at http://127.0.0.1:${port}`);
+  console.log(`Form Panic is running at http://127.0.0.1:${port}`);
 });

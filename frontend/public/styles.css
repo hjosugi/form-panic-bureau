@@ -327,9 +327,33 @@ select {
   color: var(--ink);
 }
 
-input[type="range"] {
-  width: 100%;
-  accent-color: var(--accent);
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stepper-btn {
+  width: 44px;
+  height: 44px;
+  border: 2px solid #2f3a41;
+  border-radius: 8px;
+  background: #fffdf8;
+  color: var(--ink);
+  font-size: 1.2rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.stepper-btn:hover {
+  filter: brightness(1.08);
+}
+
+.stepper-count {
+  min-width: 56px;
+  font-size: 1.05rem;
+  font-weight: 900;
+  text-align: center;
 }
 
 .checks {

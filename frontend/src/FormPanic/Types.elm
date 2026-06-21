@@ -32,10 +32,10 @@ type alias Config =
     { nameMin : Int
     , emailTld : String
     , windowOpen : Int
-    , sliderTarget : Int
+    , copiesTarget : Int
     , termsWanted : Bool
-    , robotWanted : Bool
-    , decoyWanted : Bool
+    , mailWanted : Bool
+    , surveyWanted : Bool
     }
 
 
@@ -49,9 +49,9 @@ type alias Model =
     , email : String
     , window : String
     , terms : Bool
-    , notRobot : Bool
-    , decoy : Bool
-    , slider : String
+    , mail : Bool
+    , survey : Bool
+    , copies : Int
     , dodges : Int
     , misclicks : Int
     , message : String
@@ -68,9 +68,9 @@ type Msg
     | EmailChanged String
     | WindowChanged String
     | ToggleTerms Bool
-    | ToggleRobot Bool
-    | ToggleDecoy Bool
-    | SliderChanged String
+    | ToggleMail Bool
+    | ToggleSurvey Bool
+    | AdjustCopies Int
     | ButtonDodged
     | Submit
 
@@ -111,10 +111,10 @@ defaultConfig =
     { nameMin = 3
     , emailTld = ".dev"
     , windowOpen = 3
-    , sliderTarget = 42
+    , copiesTarget = 3
     , termsWanted = True
-    , robotWanted = True
-    , decoyWanted = False
+    , mailWanted = False
+    , surveyWanted = True
     }
 
 
@@ -129,9 +129,9 @@ initialModel =
     , email = ""
     , window = "none"
     , terms = False
-    , notRobot = False
-    , decoy = False
-    , slider = "50"
+    , mail = False
+    , survey = False
+    , copies = 1
     , dodges = 0
     , misclicks = 0
     , message = "60秒以内に、受付フォームをなんとか受理させてください。"

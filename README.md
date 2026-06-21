@@ -1,4 +1,4 @@
-# Form Panic Bureau
+# Form Panic
 
 Elmだけで作る、理不尽フォーム突破ブラウザゲームです。
 

@@ -1,5 +1,5 @@
 {
-  description = "Form Panic Bureau Elm browser game environment";
+  description = "Form Panic Elm browser game environment";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -22,7 +22,7 @@
         pkgs.elmPackages.elm-format
         pkgs.elmPackages.elm-language-server
         pkgs.elmPackages.elm-test
-        pkgs.nil
+        pkgs.nixd
         pkgs.nixfmt
         pkgs.nodejs_22
       ];
@@ -39,7 +39,7 @@
         {
           type = "app";
           program = "${script}/bin/form-panic-${name}";
-          meta.description = "Form Panic Bureau ${name} command";
+          meta.description = "Form Panic ${name} command";
         };
     in
     {
@@ -68,13 +68,14 @@
             packages = formPanicPackages pkgs;
 
             shellHook = ''
-              echo "Form Panic Bureau dev shell"
+              echo "Form Panic dev shell"
               echo "  node  $(node --version)"
               echo "  npm   $(npm --version)"
               echo "  elm   $(elm --version)"
               echo "  elm-format        $(command -v elm-format)"
               echo "  elm-test          $(command -v elm-test)"
               echo "  elm-language-server $(command -v elm-language-server)"
+              echo "  nixd              $(command -v nixd)"
               echo "  nixfmt            $(command -v nixfmt)"
             '';
           };

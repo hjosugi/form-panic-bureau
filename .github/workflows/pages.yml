@@ -1,4 +1,4 @@
-name: Deploy Form Panic Bureau to GitHub Pages
+name: Deploy Form Panic to GitHub Pages
 
 on:
   push:
